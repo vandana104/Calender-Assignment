@@ -67,11 +67,18 @@
         cursor: pointer;
         font-size: 1em;
       }
+      /* .day {
+        cursor: pointer;
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: center;
+      } */
 
       .day:hover {
         background-color: #3498db;
         color: #fff;
       }
+      
 
       .selected {
         background-color: #3498db;

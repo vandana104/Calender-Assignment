@@ -1,7 +1,9 @@
 let currentDate = new Date();
+let initialSelectedDate;
 let selectedDates = [];
 
 document.addEventListener("DOMContentLoaded", function () {
+  initialSelectedDate = new Date(currentDate);
   renderCalendar(currentDate);
   renderSelectedDates();
 });
@@ -23,6 +25,7 @@ function renderCalendar(date) {
     for (let j = 0; j < 7; j++) {
       const dayElement = document.createElement("div");
       dayElement.classList.add("day");
+
       if ((i === 0 && j < firstDay.getDay()) || dayCount > lastDay.getDate()) {
         dayElement.textContent = "";
       } else {
@@ -31,8 +34,17 @@ function renderCalendar(date) {
           toggleDate(dayCount, date);
         });
 
-        if (selectedDates.includes(formatDate(dayCount, date))) {
+        const formattedDate = formatDate(dayCount, date);
+        if (
+          selectedDates.includes(formattedDate) ||
+          (initialSelectedDate &&
+            isSameDate(initialSelectedDate, date, dayCount))
+        ) {
           dayElement.classList.add("selected");
+        }
+
+        if (isToday(date, dayCount)) {
+          dayElement.classList.add("today");
         }
 
         dayCount++;
@@ -40,6 +52,19 @@ function renderCalendar(date) {
       calendarBody.appendChild(dayElement);
     }
   }
+}
+
+function isSameDate(date1, date2, day) {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    day === date1.getDate()
+  );
+}
+
+function isToday(date, day) {
+  const today = new Date();
+  return isSameDate(today, date, day);
 }
 
 function getMonthName(month) {
@@ -63,9 +88,9 @@ function getMonthName(month) {
 function formatDate(day, date) {
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
-  return `${day < 10 ? "0" : ""}${day}-${
-    month < 10 ? "0" : ""
-  }${month}-${year}`;
+  return `${year}-${month < 10 ? "0" : ""}${month}-${
+    day < 10 ? "0" : ""
+  }${day}`;
 }
 
 function toggleDate(day, date) {
@@ -97,3 +122,4 @@ function nextMonth() {
   currentDate.setMonth(currentDate.getMonth() + 1);
   renderCalendar(currentDate);
 }
+
